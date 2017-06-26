@@ -51,7 +51,7 @@ var Render = require('../render/Render');
         var render = Common.extend(defaults, options);
 
         render.mapping = {};
-        render.mapping.ratioMultiplier = 1/9; // VIEW is base ratio. Mapping to World.
+        render.mapping.ratioMultiplier = 1/6; // VIEW is base ratio. Mapping to World.
         render.mapping.VIEW = {
             width: window.innerWidth,
             height: window.innerHeight
@@ -149,7 +149,6 @@ var Render = require('../render/Render');
         Events.trigger(render, 'beforeRender', event);
 
         // TODO bounds if specified
-
         RenderDom.bodies(render, domBodies);
     }
 

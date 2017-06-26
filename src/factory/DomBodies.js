@@ -5,8 +5,49 @@ module.exports = DomBodies;
 var Body = require('../body/Body');
 var Vertices = require('../geometry/Vertices');
 var Common = require('../core/Common');
+var World = require('../body/World');
 
 (function() {
+    DomBodies.create = function(options){
+        var bodyType = options.bodyType; // Required
+        var el = options.el; // Required
+        var render = options.render; // Required
+        var position = options.position; // Required
+
+        var worldBody = null
+        var domBody = document.querySelector(el);
+
+        var positionInWorld = render.mapping.viewToWorld({x: position.x, y: position.y});        
+        if(bodyType == "block"){
+            var blockDimensionsInWorld = renderer.mapping.viewToWorld({
+                x: domBody.offsetWidth,
+                y: domBody.offsetHeight  
+            });
+            console.log("One block, please!")
+            worldBody = DomBodies.block(
+                positionInWorld.x,
+                positionInWorld.y,
+                blockDimensionsInWorld.x,
+                blockDimensionsInWorld.y
+            );
+        }else if(bodyType == "circle"){
+            var circleRadiusInWorld = renderer.mapping.viewToWorld(domBody.offsetWidth/2);
+            console.log("One circle, please!");
+            worldBody = DomBodies.circle(
+                positionInWorld.x,
+                positionInWorld.y,
+                circleRadiusInWorld
+            );
+
+        }
+
+        if(worldBody){
+            console.log(worldBody);
+            domBody.setAttribute('matter-id', worldBody.id);
+            World.add(render.engine.world, [worldBody]);
+        }
+    }
+
     DomBodies.block = function(x, y, width, height, options){
         var options = options || {};
 
