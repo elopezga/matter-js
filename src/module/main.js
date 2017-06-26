@@ -39,6 +39,9 @@ Matter.Vertices = require('../geometry/Vertices');
 
 Matter.Render = require('../render/Render');
 Matter.RenderPixi = require('../render/RenderPixi');
+Matter.RenderDom = require('../render/RenderDom');
+
+Matter.Creator = require('../creator/Creator');
 
 // aliases
 
