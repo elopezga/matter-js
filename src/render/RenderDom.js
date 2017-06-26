@@ -50,36 +50,53 @@ var Render = require('../render/Render');
 
         var render = Common.extend(defaults, options);
 
-        var DOMVIEW = {};
-        DOMVIEW.width = window.innerWidth;
-        DOMVIEW.height = window.innerHeight;
-        DOMVIEW.aspectRatio = DOMVIEW.width/DOMVIEW.height;
-        DOMVIEW.center = {x: DOMVIEW.width/2, y: DOMVIEW.height/2};
-        DOMVIEW.worldScale = 0.1
-        DOMVIEW.worldToViewMap = function(point){
-            return {
-                x: DOMVIEW.width * (point.x/(DOMVIEW.width * DOMVIEW.worldScale)),
-                y: DOMVIEW.height * (point.y/(DOMVIEW.height * DOMVIEW.worldScale))
-            };
-        }
-
-        var MATTERWORLD = {};
-        MATTERWORLD.width = DOMVIEW.width * DOMVIEW.worldScale;
-        MATTERWORLD.height = DOMVIEW.height * DOMVIEW.worldScale;
-        MATTERWORLD.center = {x: MATTERWORLD.width/2, y: MATTERWORLD.height/2};
-        MATTERWORLD.viewToWoldMap = function(point){
-            return {
-                x: MATTERWORLD.width * (point.x/DOMVIEW.width),
-                y: MATTERWORLD.height * (point.y/DOMVIEW.height)
+        render.mapping = {};
+        render.mapping.ratioMultiplier = 1/9; // VIEW is base ratio. Mapping to World.
+        render.mapping.VIEW = {
+            width: window.innerWidth,
+            height: window.innerHeight
+        };
+        render.mapping.VIEW.center = {
+            x: render.mapping.VIEW.width/2,
+            y: render.mapping.VIEW.height/2
+        };
+        render.mapping.WORLD = {
+            width: render.mapping.VIEW.width * render.mapping.ratioMultiplier,
+            height: render.mapping.VIEW.height * render.mapping.ratioMultiplier,
+        };
+        render.mapping.WORLD.center = {
+            x: render.mapping.WORLD.width/2,
+            y: render.mapping.WORLD.height/2
+        };
+        render.mapping.viewToWorld = function(value){
+            if( typeof value === 'object' &&  value !== null ){
+                return {
+                    x: render.mapping.ratioMultiplier * value.x,
+                    y: render.mapping.ratioMultiplier * value.y
+                };
+            }else{
+                return render.mapping.ratioMultiplier * value;
             }
-        }
+        };
+        render.mapping.worldToView = function(value){
+            if( typeof value === 'object' &&  value !== null ){
+                return {
+                    x: value.x/render.mapping.ratioMultiplier,
+                    y: value.y/render.mapping.ratioMultiplier
+                };
+            }else{
+                return value/render.mapping.ratioMultiplier;
+            }
+        };
+
+
 
         var debugRender = Render.create({
             element: document.querySelector('#debug'),
             engine: engine,
             options: {
-                    width: MATTERWORLD.width,
-                    height: MATTERWORLD.height,
+                    width: render.mapping.WORLD.width,
+                    height: render.mapping.WORLD.height,
                     background: '#fafafa',
                     wireframeBackground: '#222',
                     hasBounds: false,
@@ -101,8 +118,6 @@ var Render = require('../render/Render');
         console.log(debugRender);
         Render.run(debugRender);
 
-        render.DOMVIEW = DOMVIEW;
-        render.MATTERWORLD = MATTERWORLD;
         render.DebugRender = debugRender;
 
         return render;
@@ -124,7 +139,7 @@ var Render = require('../render/Render');
         world = engine.world,
         allBodies = Composite.allBodies(world),
         allConstraints = Composite.allConstraints(world),
-        domBodies = document.querySelectorAll('[matter-id]');
+        domBodies = document.querySelectorAll('[matter]');
 
 
         var event = {
@@ -164,7 +179,7 @@ var Render = require('../render/Render');
                 continue;
             }
 
-            var bodyWorldPoint = renderer.DOMVIEW.worldToViewMap({x: matterBody.position.x, y: matterBody.position.y});
+            var bodyWorldPoint = render.mapping.worldToView({x: matterBody.position.x, y: matterBody.position.y});
             var bodyViewOffset = {x: domBody.offsetWidth/2, y: domBody.offsetHeight/2};
             domBody.style.position = "absolute";
             domBody.style.transform = `translate(${bodyWorldPoint.x-bodyViewOffset.x}px, ${bodyWorldPoint.y-bodyViewOffset.y}px)`;

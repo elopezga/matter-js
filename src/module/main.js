@@ -29,6 +29,7 @@ Matter.Metrics = require('../core/Metrics');
 // @endif
 
 Matter.Bodies = require('../factory/Bodies');
+Matter.DomBodies = require('../factory/DomBodies');
 Matter.Composites = require('../factory/Composites');
 
 Matter.Axes = require('../geometry/Axes');
