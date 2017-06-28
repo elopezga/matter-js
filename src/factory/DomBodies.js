@@ -14,6 +14,11 @@ var World = require('../body/World');
         var render = options.render; // Required
         var position = options.position; // Required
 
+        delete options.bodyType;
+        delete options.el;
+        delete options.render;
+        delete options.position;
+
         var worldBody = null
         var domBody = document.querySelector(el);
 
@@ -23,29 +28,32 @@ var World = require('../body/World');
                 x: domBody.offsetWidth,
                 y: domBody.offsetHeight  
             });
-            console.log("One block, please!")
+            //console.log("One block, please!")
             worldBody = DomBodies.block(
                 positionInWorld.x,
                 positionInWorld.y,
                 blockDimensionsInWorld.x,
-                blockDimensionsInWorld.y
+                blockDimensionsInWorld.y,
+                options
             );
         }else if(bodyType == "circle"){
             var circleRadiusInWorld = renderer.mapping.viewToWorld(domBody.offsetWidth/2);
-            console.log("One circle, please!");
+            //console.log("One circle, please!");
             worldBody = DomBodies.circle(
                 positionInWorld.x,
                 positionInWorld.y,
-                circleRadiusInWorld
+                circleRadiusInWorld,
+                options
             );
 
         }
 
         if(worldBody){
-            console.log(worldBody);
             domBody.setAttribute('matter-id', worldBody.id);
             World.add(render.engine.world, [worldBody]);
         }
+
+        return worldBody;
     }
 
     DomBodies.block = function(x, y, width, height, options){
