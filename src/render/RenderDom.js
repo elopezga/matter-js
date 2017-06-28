@@ -90,7 +90,8 @@ var Render = require('../render/Render');
         };
 
 
-
+        var debugElement = document.querySelector('#debug');
+        debugElement.style.position = "absolute";
         var debugRender = Render.create({
             element: document.querySelector('#debug'),
             engine: engine,

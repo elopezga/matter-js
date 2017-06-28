@@ -24,7 +24,7 @@ var World = require('../body/World');
 
         var positionInWorld = render.mapping.viewToWorld({x: position.x, y: position.y});        
         if(bodyType == "block"){
-            var blockDimensionsInWorld = renderer.mapping.viewToWorld({
+            var blockDimensionsInWorld = render.mapping.viewToWorld({
                 x: domBody.offsetWidth,
                 y: domBody.offsetHeight  
             });
@@ -37,7 +37,7 @@ var World = require('../body/World');
                 options
             );
         }else if(bodyType == "circle"){
-            var circleRadiusInWorld = renderer.mapping.viewToWorld(domBody.offsetWidth/2);
+            var circleRadiusInWorld = render.mapping.viewToWorld(domBody.offsetWidth/2);
             //console.log("One circle, please!");
             worldBody = DomBodies.circle(
                 positionInWorld.x,
